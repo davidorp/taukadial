@@ -1,0 +1,13 @@
+pyyaml
+dotmap
+torch
+tqdm
+numpy
+torchmetrics
+transformers
+torchaudio
+scikit-learn
+wandb
+accelerate
+opensmile
+opendbm

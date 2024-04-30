@@ -1,0 +1,4 @@
+logs/
+tests/
+wandb/
+docker.sh

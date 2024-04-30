@@ -1,0 +1,12 @@
+train:
+  batch_size: 16
+  num_epochs: 100
+  learning_rate: 0.0001
+  weight_decay: 0.01
+  early_stopping: True
+  early_stopping_patience: 15
+  cross_validation: True
+  cross_validation_folds: 5
+  
+task: 'regression'
+model_name: 'multimodal_model'
