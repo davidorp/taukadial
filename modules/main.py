@@ -11,6 +11,7 @@ import wandb
 from sklearn.model_selection import KFold
 from torch.utils.data import DataLoader
 
+
 seed = 42
 set_seed(seed)
 wandb.login()
@@ -21,19 +22,19 @@ def set_up(config, train_dataloader, device, fold = 0):
     english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks = get_descriptions()
 
     if config.model_name.replace('_regression', '') == 'model_initial':
-        model = Model_initial().to(device)
+        model = Model_initial(config.task).to(device)
     elif config.model_name.replace('_regression', '') == 'model_audio':
-        model = Model_audio().to(device)
+        model = Model_audio(config.task).to(device)
     elif config.model_name.replace('_regression', '') == 'model_audio_open_smile':
-        model = Model_audio_open_smile().to(device)
+        model = Model_audio_open_smile(config.task).to(device)
     elif config.model_name.replace('_regression', '') == 'model_comparation':
-        model = Model_comparation(english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks).to(device)
+        model = Model_comparation(config.task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks).to(device)
     elif config.model_name.replace('_regression', '') == 'model_combined':
-        model = Model_combined(english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks).to(device)
+        model = Model_combined(config.task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks).to(device)
     elif config.model_name.replace('_regression', '') == 'model_combined_sim':
-        model = Model_combined_sim(english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks).to(device)
+        model = Model_combined_sim(config.task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks).to(device)
     elif config.model_name.replace('_regression', '') == 'multimodal_model':
-        model = Multimodal_model(english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, fold).to(device)
+        model = Multimodal_model(config.task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, fold).to(device)
     else:
         print('Model not found')
         sys.exit(1)

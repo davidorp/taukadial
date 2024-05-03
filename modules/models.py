@@ -3,10 +3,8 @@ import torch.nn as nn
 from transformers import BertModel
 import numpy as np
 
-final_dim = 2
-
 class Model_initial(nn.Module):
-    def __init__(self, middle_size = 256):
+    def __init__(self, task, middle_size = 256):
         super(Model_initial, self).__init__()
         self.chinese_model = BertModel.from_pretrained("bert-base-chinese")
         self.english_model = BertModel.from_pretrained("bert-base-uncased")
@@ -29,7 +27,7 @@ class Model_initial(nn.Module):
             nn.LayerNorm(middle_size),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(middle_size, final_dim)
+            nn.Linear(middle_size, 1 if task == 'regression' else 2)
         )
 
         self.english_model_classifier = nn.Sequential(
@@ -37,7 +35,7 @@ class Model_initial(nn.Module):
             nn.LayerNorm(middle_size),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(middle_size, final_dim)
+            nn.Linear(middle_size, 1 if task == 'regression' else 2)
         )
         
         self.init_weights()
@@ -106,7 +104,7 @@ class Model_initial(nn.Module):
     
 
 class Model_comparation(nn.Module):
-    def __init__(self, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks):
+    def __init__(self, task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks):
         super(Model_comparation, self).__init__()
         self.chinese_model = BertModel.from_pretrained("bert-base-chinese")
         self.english_model = BertModel.from_pretrained("bert-base-uncased")
@@ -128,7 +126,7 @@ class Model_comparation(nn.Module):
             nn.LayerNorm(256),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(256, final_dim)
+            nn.Linear(256, 1 if task == 'regression' else 2)
         )
         self.init_weights()
 
@@ -206,7 +204,7 @@ class Model_comparation(nn.Module):
 
 
 class Model_combined(nn.Module):
-    def __init__(self, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, middle_size = 256):
+    def __init__(self, task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, middle_size = 256):
         super(Model_combined, self).__init__()
         self.chinese_model = BertModel.from_pretrained("bert-base-chinese")
         self.english_model = BertModel.from_pretrained("bert-base-uncased")
@@ -230,7 +228,7 @@ class Model_combined(nn.Module):
             nn.LayerNorm(middle_size),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(middle_size, final_dim)
+            nn.Linear(middle_size, 1 if task == 'regression' else 2)
         )
 
         self.english_model_classifier = nn.Sequential(
@@ -238,7 +236,7 @@ class Model_combined(nn.Module):
             nn.LayerNorm(middle_size),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(middle_size, final_dim)
+            nn.Linear(middle_size, 1 if task == 'regression' else 2)
         )
         
         self.init_weights()
@@ -331,7 +329,7 @@ class Model_combined(nn.Module):
         return output
     
 class Model_combined_sim(nn.Module):
-    def __init__(self, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, middle_size = 256):
+    def __init__(self, task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, middle_size = 256):
         super(Model_combined_sim, self).__init__()
         self.chinese_model = BertModel.from_pretrained("bert-base-chinese")
         self.english_model = BertModel.from_pretrained("bert-base-uncased")
@@ -359,7 +357,7 @@ class Model_combined_sim(nn.Module):
             nn.LayerNorm(middle_size),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(middle_size, final_dim)
+            nn.Linear(middle_size, 1 if task == 'regression' else 2)
         )
 
         self.english_model_classifier = nn.Sequential(
@@ -367,7 +365,7 @@ class Model_combined_sim(nn.Module):
             nn.LayerNorm(middle_size),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(middle_size, final_dim)
+            nn.Linear(middle_size, 1 if task == 'regression' else 2)
         )
         
         self.init_weights()
@@ -462,14 +460,14 @@ class Model_combined_sim(nn.Module):
         return output
     
 class Model_audio(nn.Module):
-    def __init__(self):
+    def __init__(self, task):
         super(Model_audio, self).__init__()
         self.audio_model = nn.Sequential(
             nn.Linear(43, 64),
             nn.LayerNorm(64),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(64, final_dim)
+            nn.Linear(64, 1 if task == 'regression' else 2)
         )
         self.init_weights()
 
@@ -485,13 +483,13 @@ class Model_audio(nn.Module):
     
 # Model for audio in opensmile, input 6373
 class Model_audio_open_smile(nn.Module):
-    def __init__(self):
+    def __init__(self, task):
         super(Model_audio_open_smile, self).__init__()
         self.audio_model = nn.Sequential(
             nn.Linear(6373, 256),
             nn.LayerNorm(256),
             nn.ReLU(),
-            nn.Linear(256, final_dim)
+            nn.Linear(256, 1 if task == 'regression' else 2)
         )
         self.init_weights()
 
@@ -506,20 +504,21 @@ class Model_audio_open_smile(nn.Module):
         return output
 
 class Multimodal_model(nn.Module):
-    def __init__(self, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, fold=0, middle_size = 128):
+    def __init__(self, task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks, fold=0, middle_size = 128):
         super(Multimodal_model, self).__init__()
 
-        self.text_model = Model_combined_sim(english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks)
+        self.text_model = Model_combined_sim(task, english_input_ids, english_attention_masks, chinese_input_ids, chinese_attention_masks)
 
-        if final_dim == 1:
+        if task == 'regression':
             self.text_model.load_state_dict(torch.load('logs/model_combined_sim_regression/model_fold_' + str(fold) + '.pth'))
         else:
             self.text_model.load_state_dict(torch.load('logs/model_combined_sim/model_fold_' + str(fold) + '.pth'))
+
         self.text_model.english_model_classifier = nn.Sequential(self.text_model.english_model_classifier[0])
         self.text_model.chinese_model_classifier = nn.Sequential(self.text_model.chinese_model_classifier[0])
         
-        self.audio_model = Model_audio()
-        if final_dim == 1:
+        self.audio_model = Model_audio(task)
+        if task == 'regression':
             self.audio_model.load_state_dict(torch.load('logs/model_audio_regression/model_fold_' + str(fold) + '.pth'))
         else:
             self.audio_model.load_state_dict(torch.load('logs/model_audio/model_fold_' + str(fold) + '.pth'))
@@ -532,7 +531,7 @@ class Multimodal_model(nn.Module):
             nn.LayerNorm(middle_size),
             nn.ReLU(),
             nn.Dropout(0.2),
-            nn.Linear(middle_size, final_dim)
+            nn.Linear(middle_size, 1 if task == 'regression' else 2)
         )
 
         self.init_weights()
