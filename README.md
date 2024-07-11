@@ -1,6 +1,11 @@
 # Cognitive Insights Across Languages: Enhancing Multimodal Interview Analysis - Taukadial challenge
 
-Cognitive Insights Across Languages: Enhancing Multimodal Interview Analysis
+
+<p align="center">
+  Cognitive Insights Across Languages: Enhancing Multimodal Interview Analysis
+  <br>
+  <a href="https://arxiv.org/abs/2406.07542"><img alt="arXiv" src="https://img.shields.io/badge/arXiv-2406.07542-b31b1b.svg"></a> 
+</p>
 
 ## Overview
 
@@ -10,8 +15,11 @@ The dataset has been provided by the TalkBank project. Data includes audio recor
 
 To access the Taukadial dataset, please contact the TalkBank project and request permission to use their data.
 
-![Overview of proposed architecture](imgs/overview.png)
-**Overview of proposed architecture**
+<div align="center">
+  <img src="imgs/overview.png" alt="Overview of proposed architecture">
+  <br>
+  <em>Figure 1: Overview of proposed architecture</em>
+</div>
 
 ## Usage
 
@@ -23,4 +31,18 @@ sudo apt install ffmpeg cmake libsndfile1 sox
 pip install -r requirements.txt
 python3 preprocess_dataset.py
 ./scripts/train.sh
+```
+
+## Citation
+
+```
+@misc{ortizperez2024cognitiveinsightslanguagesenhancing,
+      title={Cognitive Insights Across Languages: Enhancing Multimodal Interview Analysis}, 
+      author={David Ortiz-Perez and Jose Garcia-Rodriguez and David Tomás},
+      year={2024},
+      eprint={2406.07542},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2406.07542}, 
+}
 ```
