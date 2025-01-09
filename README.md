@@ -1,4 +1,4 @@
-# Cognitive Insights Across Languages: Enhancing Multimodal Interview Analysis - Taukadial challenge
+<h1 align="center">Cognitive Insights Across Languages: Enhancing Multimodal Interview Analysis - Taukadial challenge</h3>
 
 
 <p align="center">
